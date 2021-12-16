@@ -1,4 +1,4 @@
-module Main where
+module Main ( main ) where
 
 import Prelude
 
@@ -16,19 +16,14 @@ main :: Effect Unit
 main = do
   input <- readTextFile UTF8 "src/input"
   let
-    lines = split (Pattern "\n") input
-    nums = toInts lines
-    nums2 = fromMaybe [] $ tail nums
-    both = zip nums2 nums
-    resultish = map sub both
-    result = foldl (+) 0 resultish
+    as = toInts $ split (Pattern "\n") input
+    bs = fromMaybe [] $ tail as
+    cs = map asMinusBs $ zip as bs
+    result = foldl (+) 0 cs
   logShow result
 
-sub :: Tuple Int Int -> Int
-sub (Tuple a b) =
-  if a > b
-    then 1
-    else 0
+asMinusBs :: Tuple Int Int -> Int
+asMinusBs (Tuple a b) = if a > b then 1 else 0
 
 toInts :: Array String -> Array Int
 toInts arr = catMaybes $ map (fromStringAs decimal) arr
